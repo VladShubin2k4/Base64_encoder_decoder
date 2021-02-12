@@ -2,13 +2,11 @@
 #include <cstring>
 #include <cctype>
 using namespace std;
-
 /*
 ABCDEFGHIJ KLMNOPQRST UVWXYZabcd efghijklmn opqrstuvwx yz01234567 89+/
 0123456789 0123456789 0123456789 0123456789 0123456789 0123456789 0123
 0          1          2          3          4          5          6
  */
-
 int transfer(int arg,int& k,short radix=2){
   int res=0;
   k=1;
@@ -66,11 +64,24 @@ short transfer_to_6BIN(char* str, int* code, short* bin){
     return 100;
 }
 
+void transfer_to_ASCII(short& end, int* code, short* bin){
+    for(short i=0; i<end/8; ++i){
+        code[i]=0;
+        for(short j=i*8; j<i*8+8;++j){
+            short p=128;
+            while(p){
+                code[i]=code[i]+(p*bin[j++]);
+                p/=2;
+            }
+        }
+    }
+}
+
 int main(){
     setlocale(LC_ALL, "Rus");
     ios::sync_with_stdio(false);
     cout<<"Enter len of str:\n";
-    int n,p;
+    short n;
     cin>>n;
     char* str=new char[n+1]; for(short i=0; i<=n; ++i) str[i]='\0';
     int* code=new int[n]; for(short i=0; i<n; ++i) code[i]=0;
@@ -79,18 +90,9 @@ int main(){
     if(!strcmp(str,"de")){
         cin>>str;
         Decodetable(str,code);
-        short* bin=new short[(n+1)*6];
+        short* bin=new short[n*6];
         short end=transfer_to_6BIN(str,code,bin);
-        for(short i=0; i<end/8; ++i){
-            code[i]=0;
-            for(short j=i*8; j<i*8+8;++j){
-                p=128;
-                while(p){
-                    code[i]=code[i]+(p*bin[j++]);
-                    p/=2;
-                }
-            }
-        }
+        transfer_to_ASCII(end,code,bin);
         for(short i=0; i<end/8;++i) cout<<static_cast<char>(code[i]);
         delete[] bin;
     }else{
