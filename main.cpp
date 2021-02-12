@@ -33,12 +33,10 @@ void Decodetable(char* str, int* code){
 }
 
 void SplitIntoDigits(int& p, int n, short* bin, short &i){
-    if(p){
-        do{
-            bin[i++]=n/p;
-            n%=p;
-            p/=10;
-        }while(p);
+    while(p){
+        bin[i++]=n/p;
+        n%=p;
+        p/=10;
     }
 }
 
@@ -72,7 +70,7 @@ int main(){
     setlocale(LC_ALL, "Rus");
     ios::sync_with_stdio(false);
     cout<<"Enter len of str:\n";
-    short n;
+    int n,p;
     cin>>n;
     char* str=new char[n+1]; for(short i=0; i<=n; ++i) str[i]='\0';
     int* code=new int[n]; for(short i=0; i<n; ++i) code[i]=0;
@@ -83,7 +81,6 @@ int main(){
         Decodetable(str,code);
         short* bin=new short[(n+1)*6];
         short end=transfer_to_6BIN(str,code,bin);
-        int p;
         for(short i=0; i<end/8; ++i){
             code[i]=0;
             for(short j=i*8; j<i*8+8;++j){
