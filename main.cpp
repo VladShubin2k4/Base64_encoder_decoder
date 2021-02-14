@@ -1,10 +1,9 @@
 #include <iostream>
 #include <windows.h>
-#include <cstring>
+#include <string>
 #include <cctype>
 #include <cmath>
 using namespace std;
-
 int transfer(int arg,int& k,short radix=2){
   int res=0;
   if(arg<0) arg+=256;
@@ -16,10 +15,9 @@ int transfer(int arg,int& k,short radix=2){
   }
   return res;
 }
-
-void Decodetable(char* str, int* code,bool decode){
+void Decodetable(string& str, int* code,bool decode){
     if(decode){
-        for(short i=0; i<strlen(str); ++i){
+        for(short i=0; i<str.size(); ++i){
             if(isalpha(str[i])){
                 if(str[i]>95) code[i]=str[i]-71;
                 else code[i]=str[i]-65;
@@ -28,9 +26,8 @@ void Decodetable(char* str, int* code,bool decode){
             else if(str[i]=='+') code[i]=62;
             else code[i]=63;
         }
-    }else for(short i=0; i<strlen(str);++i) code[i]=str[i];
+    }else for(short i=0; i<str.size();++i) code[i]=str[i];
 }
-
 void SplitIntoDigits(int& p, int n, short* bin, short &i){
     while(p){
         bin[i++]=n/p;
@@ -38,7 +35,6 @@ void SplitIntoDigits(int& p, int n, short* bin, short &i){
         p/=10;
     }
 }
-
 void transfer_to_ASCII(short& end, int* code, short* bin,short r){
     for(short i=0; i<end/r; ++i){
         code[i]=0;
@@ -51,8 +47,7 @@ void transfer_to_ASCII(short& end, int* code, short* bin,short r){
         }
     }
 }
-
-void transfer_to_Base64(short& end, int* code, short* bin,short r,char* res){
+void transfer_to_Base64(short& end, int* code, short* bin,short r,string& res){
     for(short i=0; i<1+end/r; ++i){
         code[i]=0;
         for(short j=i*r; j<i*r+r;++j){
@@ -61,19 +56,18 @@ void transfer_to_Base64(short& end, int* code, short* bin,short r,char* res){
                 code[i]=code[i]+(p*bin[j++]);
                 p/=2;
             }
-            if(code[i]<26) res[i]=static_cast<char>(code[i]+65);
-            else if(code[i]<52) res[i]=static_cast<char>(code[i]+71);
-            else if(code[i]<62) res[i]=static_cast<char>(code[i]-4);
-            else if(code[i]==0) res[i]='=';
-            else if(code[i]==62) res[i]=43;
-            else res[i]=47;
+            if(code[i]<26) res+=static_cast<char>(code[i]+65);
+            else if(code[i]<52) res+=static_cast<char>(code[i]+71);
+            else if(code[i]<62) res+=static_cast<char>(code[i]-4);
+            else if(code[i]==0) res+='=';
+            else if(code[i]==62) res+=43;
+            else res+=47;
         }
     }
 }
-
-short transfer_to_BIN(char* str, int* code, short* bin, short arg){
+short transfer_to_BIN(string& str, int* code, short* bin, short arg){
     int p=1;
-    for(short i=0; i<strlen(str); ++i){
+    for(short i=0; i<str.size(); ++i){
         code[i]=transfer(code[i],p,2);
         p/=10;
         for(short j=i*arg; j<arg+i*arg; ++j){
@@ -92,45 +86,42 @@ short transfer_to_BIN(char* str, int* code, short* bin, short arg){
                 }
             }else if(p) SplitIntoDigits(p,code[i],bin,j);
         }
-        if(i+1==strlen(str)) return (arg*(i+1));
+        if(i+1==str.size()) return (arg*(i+1));
     }
     return 100;
 }
-
 int main(){
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
     ios::sync_with_stdio(false);
-    cout<<"Enter len of str:\n";
-    short n,end;
-    cin>>n;
-    char* str=new char[n+1]; for(short i=0; i<=n; ++i) str[i]='\0';
-    int* code=new int[n]; for(short i=0; i<n; ++i) code[i]=0;
+    short end;string str;
     cout<<"Enter what you want to do: encode or decode?\n";
     cin>>str;
     cout<<"Input your str:\n";
-    if(!strcmp(str,"de")){
+    if(str=="de"){
         cin>>str;
+        int* code=new int[str.size()];
+        short* bin=new short[str.size()*6];
         Decodetable(str,code,true);
-        short* bin=new short[n*6];
         end=transfer_to_BIN(str,code,bin,6);
         transfer_to_ASCII(end,code,bin,8);
         for(short i=0; i<end/8;++i) cout<<static_cast<char>(code[i]);
         delete[] bin;
+        delete[] code;
     }else{
         cin>>str;
+        string res;
+        int* code=new int[str.size()];
+        short* bin=new short[str.size()*8];
         Decodetable(str,code,false);
-        char* res=new char[strlen(str)*8/6];
-        short* bin=new short[n*8]; for(short i=0; i<n*8; ++i) bin[i]=0;
         end=transfer_to_BIN(str,code,bin,8);
         transfer_to_Base64(end,code,bin,6,res);
-        for(short i=0; i<=end/6;++i) cout<<res[i];
+        cout<<res;
         if(end%6) for(short i=1; i<6-(end%6); i*=2) cout<<'=';
-        delete[] res;
         delete[] bin;
+        delete[] code;
     }
     cout<<endl;
-    delete[] str;
-    delete[] code;
+    cin.get();cin.get();
     return 0;
 }
