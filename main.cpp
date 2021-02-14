@@ -92,9 +92,8 @@ short transfer_to_BIN(char* str, int* code, short* bin, short arg){
                 }
             }else if(p) SplitIntoDigits(p,code[i],bin,j);
         }
-        if(i+1==strlen(str)) return (arg*(i+1));
     }
-    return 100;
+    return (strlen(str)*arg);
 }
 
 int main(){
