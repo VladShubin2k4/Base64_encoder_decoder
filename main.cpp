@@ -60,8 +60,8 @@ void transfer_to_Base64(short& end, int* code, short* bin,short r,string& res){
             else if(code[i]<52) res+=static_cast<char>(code[i]+71);
             else if(code[i]<62) res+=static_cast<char>(code[i]-4);
             else if(code[i]==0) res+='=';
-            else if(code[i]==62) res+=43;
-            else res+=47;
+            else if(code[i]==62) res+=static_cast<char>(43);
+            else res+=static_cast<char>(47);
         }
     }
 }
@@ -86,16 +86,14 @@ short transfer_to_BIN(string& str, int* code, short* bin, short arg){
                 }
             }else if(p) SplitIntoDigits(p,code[i],bin,j);
         }
-        if(i+1==str.size()) return (arg*(i+1));
     }
-    return 100;
+    return (str.size()*arg);
 }
 int main(){
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
     ios::sync_with_stdio(false);
-    short end;
-    string str;
+    short end;string str;
     cout<<"Enter what you want to do: encode or decode?\n";
     cin>>str;
     cout<<"Input your str:\n";
@@ -123,6 +121,6 @@ int main(){
         delete[] code;
     }
     cout<<endl;
-    cin.get();
+    cin.get();cin.get();
     return 0;
 }
