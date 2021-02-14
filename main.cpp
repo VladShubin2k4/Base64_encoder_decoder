@@ -94,7 +94,8 @@ int main(){
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
     ios::sync_with_stdio(false);
-    short end;string str;
+    short end;
+    string str;
     cout<<"Enter what you want to do: encode or decode?\n";
     cin>>str;
     cout<<"Input your str:\n";
@@ -122,6 +123,6 @@ int main(){
         delete[] code;
     }
     cout<<endl;
-    cin.get();cin.get();
+    cin.get();
     return 0;
 }
