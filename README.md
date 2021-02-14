@@ -2,6 +2,8 @@
 Encoder/Decoder for practice in computer networks
 I will be happy if it will help you!
 
+On Beta branch is more useful but may be more unstable version
+
 PS. This encoder/decoder now could work only with word without "space" and in diapasone:
 
 ABCDEFGHIJ KLMNOPQRST UVWXYZabcd efghijklmn opqrstuvwx yz01234567 89+/
