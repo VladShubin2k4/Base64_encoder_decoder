@@ -4,11 +4,7 @@
 #include <cctype>
 #include <cmath>
 using namespace std;
-/*
-ABCDEFGHIJ KLMNOPQRST UVWXYZabcd efghijklmn opqrstuvwx yz01234567 89+/
-0123456789 0123456789 0123456789 0123456789 0123456789 0123456789 0123
-0          1          2          3          4          5          6
- */
+
 int transfer(int arg,int& k,short radix=2){
   int res=0;
   if(arg<0) arg+=256;
