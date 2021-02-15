@@ -104,7 +104,7 @@ int main(){
     cin>>n;
     char* str=new char[n+1]; for(short i=0; i<=n; ++i) str[i]='\0';
     int* code=new int[n]; for(short i=0; i<n; ++i) code[i]=0;
-    cout<<encode or decode?\n";
+    cout<<"encode or decode?\n";
     cin>>str;
     cout<<"Input your str:"<<endl;
     if(!strcmp(str,"de")){
