@@ -48,7 +48,7 @@ void transfer_to_ASCII(short& end, int* code, short* bin,short r){
     }
 }
 void transfer_to_Base64(short& end, int* code, short* bin,short r,string& res){
-    for(short i=0; i<1+end/r; ++i){
+    for(short i=0; i<=end/r; ++i){
         code[i]=0;
         for(short j=i*r; j<i*r+r;++j){
             int p=static_cast<int>(pow(2,r-1));
