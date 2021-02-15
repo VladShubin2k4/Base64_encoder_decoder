@@ -55,16 +55,15 @@ void transfer_to_ASCII(short& end, int* code, short* bin,short r){
 void transfer_to_Base64(short& end, int* code, short* bin,short r,char* res){
     for(short i=0; i<1+end/r; ++i){
         code[i]=0;
-        for(short j=i*r; j<i*r+r;++j){
+        for(short j=i*r;j<end && j<i*r+r;++j){
             int p=static_cast<int>(pow(2,r-1));
-            while(p){
+            while(p && j<end){
                 code[i]=code[i]+(p*bin[j++]);
                 p/=2;
             }
             if(code[i]<26) res[i]=static_cast<char>(code[i]+65);
             else if(code[i]<52) res[i]=static_cast<char>(code[i]+71);
             else if(code[i]<62) res[i]=static_cast<char>(code[i]-4);
-            else if(code[i]==0) res[i]='=';
             else if(code[i]==62) res[i]=43;
             else res[i]=47;
         }
@@ -105,9 +104,9 @@ int main(){
     cin>>n;
     char* str=new char[n+1]; for(short i=0; i<=n; ++i) str[i]='\0';
     int* code=new int[n]; for(short i=0; i<n; ++i) code[i]=0;
-    cout<<"Enter what you want to do: encode or decode?\n";
+    cout<<encode or decode?\n";
     cin>>str;
-    cout<<"Input your str:\n";
+    cout<<"Input your str:"<<endl;
     if(!strcmp(str,"de")){
         cin>>str;
         Decodetable(str,code,true);
@@ -128,7 +127,6 @@ int main(){
         delete[] res;
         delete[] bin;
     }
-    cout<<endl;
     delete[] str;
     delete[] code;
     return 0;
