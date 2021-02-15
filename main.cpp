@@ -4,6 +4,7 @@
 #include <cctype>
 #include <cmath>
 using namespace std;
+
 int transfer(int arg,int& k,short radix=2){
   int res=0;
   if(arg<0) arg+=256;
@@ -50,16 +51,15 @@ void transfer_to_ASCII(short& end, int* code, short* bin,short r){
 void transfer_to_Base64(short& end, int* code, short* bin,short r,string& res){
     for(short i=0; i<=end/r; ++i){
         code[i]=0;
-        for(short j=i*r; j<i*r+r;++j){
+        for(short j=i*r; j<i*r+r && j<end;++j){
             int p=static_cast<int>(pow(2,r-1));
-            while(p){
-                code[i]=code[i]+(p*bin[j++]);
-                p/=2;
+            while(p && j<end){
+              code[i]=code[i]+(p*bin[j++]);
+              p/=2;
             }
             if(code[i]<26) res+=static_cast<char>(code[i]+65);
             else if(code[i]<52) res+=static_cast<char>(code[i]+71);
             else if(code[i]<62) res+=static_cast<char>(code[i]-4);
-            else if(code[i]==0) res+='=';
             else if(code[i]==62) res+=static_cast<char>(43);
             else res+=static_cast<char>(47);
         }
@@ -87,16 +87,17 @@ short transfer_to_BIN(string& str, int* code, short* bin, short arg){
             }else if(p) SplitIntoDigits(p,code[i],bin,j);
         }
     }
-    return (str.size()*arg);
+    return (static_cast<short>(str.size())*arg);
 }
 int main(){
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
     ios::sync_with_stdio(false);
-    short end;string str;
-    cout<<"Enter what you want to do: encode or decode?\n";
+    short end;
+    string str;
+    cout<<"encode or decode?\n";
     cin>>str;
-    cout<<"Input your str:\n";
+    cout<<"Input your str:"<<endl;
     if(str=="de"){
         cin>>str;
         int* code=new int[str.size()];
@@ -115,12 +116,11 @@ int main(){
         Decodetable(str,code,false);
         end=transfer_to_BIN(str,code,bin,8);
         transfer_to_Base64(end,code,bin,6,res);
+        if(end%6) for(short i=1; i<6-(end%6); i*=2) res+="=";
         cout<<res;
-        if(end%6) for(short i=1; i<6-(end%6); i*=2) cout<<'=';
         delete[] bin;
         delete[] code;
     }
-    cout<<endl;
     cin.get();cin.get();
     return 0;
 }
