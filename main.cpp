@@ -5,7 +5,7 @@
 #include <cmath>
 using namespace std;
 
-int transfer(int arg,int& k,short radix=2){
+int transfer(int arg,int& k,short radix){
   int res=0;
   if(arg<0) arg+=256;
   k=1;
@@ -16,6 +16,7 @@ int transfer(int arg,int& k,short radix=2){
   }
   return res;
 }
+
 void Decodetable(string& str, int* code,bool decode){
     if(decode){
         for(short i=0; i<str.size(); ++i){
@@ -29,6 +30,7 @@ void Decodetable(string& str, int* code,bool decode){
         }
     }else for(short i=0; i<str.size();++i) code[i]=str[i];
 }
+
 void SplitIntoDigits(int& p, int n, short* bin, short &i){
     while(p){
         bin[i++]=n/p;
@@ -36,26 +38,28 @@ void SplitIntoDigits(int& p, int n, short* bin, short &i){
         p/=10;
     }
 }
+
 void transfer_to_ASCII(short& end, int* code, short* bin,short r){
     for(short i=0; i<end/r; ++i){
         code[i]=0;
         for(short j=i*r; j<i*r+r;++j){
-            int p=static_cast<int>(pow(2,r-1));
+            int p=1<<(r-1);
             while(p){
                 code[i]=code[i]+(p*bin[j++]);
-                p/=2;
+                p=p>>1;
             }
         }
     }
 }
+
 void transfer_to_Base64(short& end, int* code, short* bin,short r,string& res){
     for(short i=0; i<=end/r; ++i){
         code[i]=0;
         for(short j=i*r; j<i*r+r && j<end;++j){
-            int p=static_cast<int>(pow(2,r-1));
+            int p=1<<(r-1);
             while(p && j<end){
               code[i]=code[i]+(p*bin[j++]);
-              p/=2;
+              p=p>>1;
             }
             if(code[i]<26) res+=static_cast<char>(code[i]+65);
             else if(code[i]<52) res+=static_cast<char>(code[i]+71);
@@ -65,6 +69,7 @@ void transfer_to_Base64(short& end, int* code, short* bin,short r,string& res){
         }
     }
 }
+
 short transfer_to_BIN(string& str, int* code, short* bin, short arg){
     int p=1;
     for(short i=0; i<str.size(); ++i){
@@ -89,12 +94,12 @@ short transfer_to_BIN(string& str, int* code, short* bin, short arg){
     }
     return (static_cast<short>(str.size())*arg);
 }
+
 int main(){
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
     ios::sync_with_stdio(false);
-    short end;
-    string str;
+    short end; string str;
     cout<<"encode or decode?\n";
     cin>>str;
     cout<<"Input your str:"<<endl;
@@ -116,7 +121,7 @@ int main(){
         Decodetable(str,code,false);
         end=transfer_to_BIN(str,code,bin,8);
         transfer_to_Base64(end,code,bin,6,res);
-        if(end%6) for(short i=1; i<6-(end%6); i<<1) res+="=";
+        if(end%6) for(short i=1; i<6-(end%6); i=static_cast<short>(i<<1)) res+="=";
         cout<<res;
         delete[] bin;
         delete[] code;
