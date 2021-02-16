@@ -5,7 +5,7 @@
 #include <cmath>
 using namespace std;
 
-int transfer(int arg,int& k,short radix=2){
+int transfer(int arg,int& k,short radix){
   int res=0;
   if(arg<0) arg+=256;
   k=1;
@@ -43,10 +43,10 @@ void transfer_to_ASCII(short& end, int* code, short* bin,short r){
     for(short i=0; i<end/r; ++i){
         code[i]=0;
         for(short j=i*r; j<i*r+r;++j){
-            int p=static_cast<int>(pow(2,r-1));
+            int p=1<<(r-1);
             while(p){
                 code[i]=code[i]+(p*bin[j++]);
-                p/=2;
+                p=p>>1;
             }
         }
     }
@@ -56,10 +56,10 @@ void transfer_to_Base64(short& end, int* code, short* bin,short r,char* res){
     for(short i=0; i<1+end/r; ++i){
         code[i]=0;
         for(short j=i*r;j<end && j<i*r+r;++j){
-            int p=static_cast<int>(pow(2,r-1));
+            int p=1<<(r-1);
             while(p && j<end){
                 code[i]=code[i]+(p*bin[j++]);
-                p/=2;
+                p=p>>1;
             }
             if(code[i]<26) res[i]=static_cast<char>(code[i]+65);
             else if(code[i]<52) res[i]=static_cast<char>(code[i]+71);
@@ -123,7 +123,7 @@ int main(){
         end=transfer_to_BIN(str,code,bin,8);
         transfer_to_Base64(end,code,bin,6,res);
         for(short i=0; i<=end/6;++i) cout<<res[i];
-        if(end%6) for(short i=1; i<6-(end%6); i*=2) cout<<'=';
+        if(end%6) for(short i=1; i<6-(end%6); i=i<<1) cout<<'=';
         delete[] res;
         delete[] bin;
     }
