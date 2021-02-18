@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <string>
 #include <cctype>
+#include <cstdlib>
 #include <cmath>
 using namespace std;
 
@@ -110,7 +111,11 @@ int main(){
         Decodetable(str,code,true);
         end=transfer_to_BIN(str,code,bin,6);
         transfer_to_ASCII(end,code,bin,8);
-        for(short i=0; i<end/8;++i) cout<<static_cast<char>(code[i]);
+        cout<<"Where to output the result: file or console?"<<endl;
+        cin>>str;
+        str.shrink_to_fit();
+        if(str=="f") freopen("res.txt","w",stdout);
+        for(short i=0; i<end>>3;++i) cout<<static_cast<char>(code[i]);
         delete[] bin;
         delete[] code;
     }else{
@@ -122,6 +127,10 @@ int main(){
         end=transfer_to_BIN(str,code,bin,8);
         transfer_to_Base64(end,code,bin,6,res);
         if(end%6) for(short i=1; i<6-(end%6); i=static_cast<short>(i<<1)) res+="=";
+        cout<<"Where to output the result: file or console?"<<endl;
+        cin>>str;
+        str.shrink_to_fit();
+        if(str=="f") freopen("res.txt","w",stdout);
         cout<<res;
         delete[] bin;
         delete[] code;
