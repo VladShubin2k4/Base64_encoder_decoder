@@ -112,6 +112,7 @@ int main(){
         end=transfer_to_BIN(str,code,bin,6);
         transfer_to_ASCII(end,code,bin,8);
         cout<<"Where to output the result: file or console?"<<endl;
+        str.clear();
         cin>>str;
         str.shrink_to_fit();
         if(str=="f") freopen("res.txt","w",stdout);
@@ -128,6 +129,7 @@ int main(){
         transfer_to_Base64(end,code,bin,6,res);
         if(end%6) for(short i=1; i<6-(end%6); i<<=1)) res+="=";
         cout<<"Where to output the result: file or console?"<<endl;
+        str.clear();
         cin>>str;
         str.shrink_to_fit();
         if(str=="f") freopen("res.txt","w",stdout);
