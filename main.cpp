@@ -47,7 +47,7 @@ void transfer_to_ASCII(short& end, int* code, short* bin,short r){
             int p=1<<(r-1);
             while(p){
                 code[i]=code[i]+(p*bin[j++]);
-                p=p>>1;
+                p>>=1;
             }
         }
     }
@@ -126,7 +126,7 @@ int main(){
         Decodetable(str,code,false);
         end=transfer_to_BIN(str,code,bin,8);
         transfer_to_Base64(end,code,bin,6,res);
-        if(end%6) for(short i=1; i<6-(end%6); i=static_cast<short>(i<<1)) res+="=";
+        if(end%6) for(short i=1; i<6-(end%6); i<<=1)) res+="=";
         cout<<"Where to output the result: file or console?"<<endl;
         cin>>str;
         str.shrink_to_fit();
