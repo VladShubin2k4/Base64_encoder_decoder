@@ -119,11 +119,11 @@ int main(){
         cin>>str;
         Decodetable(str,code,false);
         char* res=new char[strlen(str)*8/6];
-        short* bin=new short[n*8]; for(short i=0; i<n*8; ++i) bin[i]=0;
+        short* bin=new short[n*8]; for(short i=0; i<n<<3; ++i) bin[i]=0;
         end=transfer_to_BIN(str,code,bin,8);
         transfer_to_Base64(end,code,bin,6,res);
         for(short i=0; i<=end/6;++i) cout<<res[i];
-        if(end%6) for(short i=1; i<6-(end%6); i=i<<1) cout<<'=';
+        if(end%6) for(short i=1; i<6-(end%6); i<<=1) cout<<'=';
         delete[] res;
         delete[] bin;
     }
