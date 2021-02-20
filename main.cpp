@@ -4,7 +4,6 @@
 #include <cctype>
 #include <cstdlib>
 #include <cmath>
-using namespace std;
 
 int transfer(int arg,int& k,short radix){
   int res=0;
@@ -18,7 +17,7 @@ int transfer(int arg,int& k,short radix){
   return res;
 }
 
-void Decodetable(string& str, int* code,bool decode){
+void Decodetable(std::string& str, int* code,bool decode){
     if(decode){
         for(short i=0; i<str.size(); ++i){
             if(isalpha(str[i])){
@@ -53,14 +52,14 @@ void transfer_to_ASCII(short& end, int* code, short* bin,short r){
     }
 }
 
-void transfer_to_Base64(short& end, int* code, short* bin,short r,string& res){
+void transfer_to_Base64(short& end, int* code, short* bin,short r,std::string& res){
     for(short i=0; i<=end/r; ++i){
         code[i]=0;
         for(short j=i*r; j<i*r+r && j<end;++j){
             int p=1<<(r-1);
             while(p && j<end){
               code[i]=code[i]+(p*bin[j++]);
-              p=p>>1;
+              p>>=1;
             }
             if(code[i]<26) res+=static_cast<char>(code[i]+65);
             else if(code[i]<52) res+=static_cast<char>(code[i]+71);
@@ -71,16 +70,16 @@ void transfer_to_Base64(short& end, int* code, short* bin,short r,string& res){
     }
 }
 
-short transfer_to_BIN(string& str, int* code, short* bin, short arg){
+short transfer_to_BIN(std::string& str, int* code, short* bin, short arg){
     int p=1;
-    for(short i=0; i<str.size(); ++i){
+    for(short i=0; i<static_cast<short>(str.size()); ++i){
         code[i]=transfer(code[i],p,2);
         p/=10;
         for(short j=i*arg; j<arg+i*arg; ++j){
             if(p<pow(10,arg)){
                 if(!p && isalpha(str[i])){
                     short lim=j;
-                    for(; j<lim+arg;) bin[j++]=0;
+                    for(;j<lim+arg;) bin[j++]=0;
                 }else{
                     int cntp=p,cnt=0;
                     while(cntp){
@@ -99,44 +98,45 @@ short transfer_to_BIN(string& str, int* code, short* bin, short arg){
 int main(){
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
-    ios::sync_with_stdio(false);
-    short end; string str;
-    cout<<"encode or decode?\n";
-    cin>>str;
-    cout<<"Input your str:"<<endl;
+    std::ios::sync_with_stdio(false);
+    short end;
+    std::string str;
+    std::cout<<"encode or decode?\n";
+    std::cin>>str;
+    std::cout<<"Input your str:"<<std::endl;
     if(str=="de"){
-        cin>>str;
+        std::cin>>str;
         int* code=new int[str.size()];
         short* bin=new short[str.size()*6];
         Decodetable(str,code,true);
         end=transfer_to_BIN(str,code,bin,6);
         transfer_to_ASCII(end,code,bin,8);
-        cout<<"Where to output the result: file or console?"<<endl;
+        std::cout<<"Where to output the result: file or console?"<<std::endl;
         str.clear();
-        cin>>str;
+        std::cin>>str;
         str.shrink_to_fit();
         if(str=="f") freopen("res.txt","w",stdout);
-        for(short i=0; i<end>>3;++i) cout<<static_cast<char>(code[i]);
+        for(short i=0; i<end>>3;++i) std::cout<<static_cast<char>(code[i]);
         delete[] bin;
         delete[] code;
     }else{
-        cin>>str;
-        string res;
-        int* code=new int[str.size()];
-        short* bin=new short[str.size()*8];
+        std::cin>>str;
+        std::string res;
+        int* code=new int[str.size()<<1];
+        short* bin=new short[str.size()<<3];
         Decodetable(str,code,false);
         end=transfer_to_BIN(str,code,bin,8);
         transfer_to_Base64(end,code,bin,6,res);
-        if(end%6) for(short i=1; i<6-(end%6); i<<=1)) res+="=";
-        cout<<"Where to output the result: file or console?"<<endl;
+        if(end%6) for(short i=1; i<6-(end%6); i<<=1) res+="=";
+        std::cout<<"Where to output the result: file or console?"<<std::endl;
         str.clear();
-        cin>>str;
+        std::cin>>str;
         str.shrink_to_fit();
         if(str=="f") freopen("res.txt","w",stdout);
-        cout<<res;
+        std::cout<<res;
         delete[] bin;
         delete[] code;
     }
-    cin.get();cin.get();
+    std::cin.get();std::cin.get();
     return 0;
 }
